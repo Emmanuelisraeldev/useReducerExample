@@ -15,10 +15,9 @@ const App = () => {
       case "name":
         return { ...state, name: action.payload };
       case "newitem":
-        const newPeople = [...state.people, action.payload];
         return {
           ...state,
-          people: newPeople,
+          people: [...state.people, action.payload],
           showModal: true,
           modalContent: "item added"
         };
@@ -32,6 +31,13 @@ const App = () => {
         };
       case "closemodal":
         return { ...state, showModal: false };
+      case "removeItem":
+        return {
+          ...state,
+          people: state.people.filter((person) => {
+            return person.id !== action.payload;
+          })
+        };
       default:
         throw new Error(`Unknown action type: ${action.type}`);
     }
@@ -75,6 +81,13 @@ const App = () => {
         return (
           <div key={person.id}>
             <h3>{person.name}</h3>
+            <button
+              onClick={(e) =>
+                dispatch({ type: "removeItem", payload: person.id })
+              }
+            >
+              remove
+            </button>
           </div>
         );
       })}
